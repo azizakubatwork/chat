@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ room_name }} Room</title>
+</head>
+<body>
+    {% if username %}
+        <h1>Welcome, {{ username }}!</h1>
+        <!-- Message List -->
+        <ul id="message-list">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        <!-- Message Input Form -->
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Type your message">
+            <button type="button" onclick="sendMessage()">Send</button>
+        </form>
+        <!-- Leave Chat Button -->
+        <a href="{{ url_for('leave', room_name=room_name, username=username) }}">Leave Chat</a>
+
+        <script>
+            function sendMessage() {
+                var messageInput = document.getElementById('message-input');
+                var message = messageInput.value;
+                // Add the message to the list (you may want to use WebSockets for real-time updates)
+                var messageList = document.getElementById('message-list');
+                var newMessage = document.createElement('li');
+                newMessage.textContent = message;
+                messageList.appendChild(newMessage);
+                // Clear the input field
+                messageInput.value = '';
+            }
+        </script>
+    {% else %}
+        <!-- Join Form -->
+        <h1>Join {{ room_name }} Room</h1>
+        <form action="{{ url_for('room', room_name=room_name) }}" method="post">
+            <label for="username">Enter your name:</label>
+            <input type="text" id="username" name="username" maxlength="50" required>
+            <button type="submit">Join</button>
+        </form>
+    {% endif %}
+</body>
+</html>
